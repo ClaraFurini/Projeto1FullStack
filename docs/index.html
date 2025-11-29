@@ -14,8 +14,28 @@
       <p class="fallback">
         Se a página estiver em branco no GitHub Pages, configure a fonte do Pages para a pasta
         <code>/docs</code> ou habilite o workflow de deploy automático. Assim, o site usa o bundle
-        compilado em vez do código-fonte.
+        compilado em vez do código-fonte. Se preferir, abra diretamente
+        <a href="./docs/index.html">./docs/index.html</a>.
       </p>
     </div>
+
+    <script>
+      // Se a instância do site estiver servindo diretamente o código-fonte (sem build),
+      // redireciona para a versão pré-compilada em /docs quando ela estiver presente. Dessa
+      // forma, o GitHub Pages no modo "Deploy from a branch" passa a usar o bundle correto
+      // mesmo que a configuração da fonte esteja no diretório raiz.
+      const docsUrl = new URL('./docs/index.html', window.location.href)
+
+      fetch(docsUrl, { method: 'HEAD' })
+        .then((response) => {
+          const alreadyInDocs = window.location.pathname.includes('/docs')
+          if (!alreadyInDocs && response.ok) {
+            window.location.replace(docsUrl.href)
+          }
+        })
+        .catch(() => {
+          // Mantém a página atual (modo de desenvolvimento ou build via GitHub Actions)
+        })
+    </script>
   </body>
 </html>
