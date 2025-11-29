@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearch } from '../contexts/SearchContext'
+import { useAuth } from '../contexts/AuthContext'
 import ErrorMessage from './messages/ErrorMessage'
 
 function SearchForm() {
   const { state, performSearch, clearResults } = useSearch()
+  const { user } = useAuth()
   const today = useMemo(() => new Date().toISOString().split('T')[0], [])
   const [selectedDate, setSelectedDate] = useState(today)
   const [error, setError] = useState('')
@@ -43,7 +45,7 @@ function SearchForm() {
     <section className="panel">
       <header className="panel__header">
         <div>
-          <p className="eyebrow">Busca por data com API da NASA</p>
+          <p className="eyebrow">Busca autenticada</p>
           <h2>Veja NEOs que passam perto da Terra em um dia</h2>
         </div>
         <button type="button" className="ghost" onClick={handleReset} disabled={state.loading}>
@@ -65,12 +67,12 @@ function SearchForm() {
         </label>
 
         <div className="form-actions">
-          <button className="primary" type="submit" disabled={state.loading}>
+          <button className="primary" type="submit" disabled={state.loading || !user}>
             {state.loading ? 'Buscando…' : 'Buscar por data'}
           </button>
           <p className="helper">
-            Consulte os registros de objetos próximos à Terra na data informada. Usamos a mesma
-            API pública (NeoWs) utilizada em outras páginas do site.
+            Consulte os registros de objetos próximos à Terra na data informada. Os dados vêm do
+            banco MongoDB interno, sem depender da API externa. {user ? '' : 'Faça login para liberar a busca.'}
           </p>
         </div>
       </form>
