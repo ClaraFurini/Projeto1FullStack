@@ -1,36 +1,43 @@
-import { useEffect } from 'react'
-import { useForm } from 'https://esm.sh/react-hook-form@7.54.0'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearch } from '../contexts/SearchContext'
 import ErrorMessage from './messages/ErrorMessage'
 
 function SearchForm() {
   const { state, performSearch, clearResults } = useSearch()
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitSuccessful },
-    reset,
-    watch,
-  } = useForm({
-    defaultValues: { query: '' },
-    mode: 'onBlur',
-    reValidateMode: 'onChange',
-  })
+  const [query, setQuery] = useState('')
+  const [error, setError] = useState('')
 
-  const queryValue = watch('query')
+  const trimmed = useMemo(() => query.trim(), [query])
 
   useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset({ query: queryValue })
+    if (error && trimmed.length >= 3) {
+      setError('')
     }
-  }, [isSubmitSuccessful, reset, queryValue])
+  }, [error, trimmed])
 
-  const onSubmit = (data) => {
-    performSearch(data.query.trim())
+  const validate = () => {
+    if (!trimmed) {
+      return 'Informe um termo para buscar.'
+    }
+    if (trimmed.length < 3) {
+      return 'Digite ao menos 3 caracteres.'
+    }
+    return ''
+  }
+
+  const onSubmit = (event) => {
+    event.preventDefault()
+    const validation = validate()
+    if (validation) {
+      setError(validation)
+      return
+    }
+    performSearch(trimmed)
   }
 
   const handleReset = () => {
-    reset({ query: '' })
+    setQuery('')
+    setError('')
     clearResults()
   }
 
@@ -46,19 +53,17 @@ function SearchForm() {
         </button>
       </header>
 
-      <form className="search-form" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form className="search-form" onSubmit={onSubmit} noValidate>
         <label className="field">
           <span>Título do livro ou autor *</span>
           <input
             type="text"
             placeholder="Ex.: Dom Casmurro, Machado de Assis"
-            {...register('query', {
-              required: 'Informe um termo para buscar.',
-              minLength: { value: 3, message: 'Digite ao menos 3 caracteres.' },
-            })}
-            aria-invalid={Boolean(errors.query)}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            aria-invalid={Boolean(error)}
           />
-          {errors.query && <ErrorMessage message={errors.query.message} />}
+          {error && <ErrorMessage message={error} />}
         </label>
 
         <div className="form-actions">
