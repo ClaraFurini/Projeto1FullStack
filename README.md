@@ -13,3 +13,9 @@ O projeto já inclui build estático em `docs/` e um workflow para publicar no G
    - A cada push na `main`, o workflow roda `npm ci`, gera o build e publica a pasta `dist` automaticamente.
 
 Se a página ainda aparecer vazia, abra o console do navegador (F12) para verificar se os assets foram encontrados ou se há bloqueios de rede. O `index.html` agora exibe uma mensagem de fallback com essas instruções caso o bundle não carregue.
+
+## Backend e autenticação
+
+- A pasta `backend/` traz um servidor Express com autenticação JWT via cookies HttpOnly, cache Redis para as rotas de busca e seeding inicial de objetos próximos da Terra (espelhando o catálogo NeoWs).
+- Configure variáveis em `backend/.env` (exemplo em `.env.example`) com `MONGO_URI`, `JWT_SECRET`, `REDIS_URL` e `CORS_ORIGIN` apontando para o frontend.
+- Para desenvolvimento local com containers, use `docker-compose up` e acesse o frontend em `http://localhost:5173` e o backend em `http://localhost:3000`.
