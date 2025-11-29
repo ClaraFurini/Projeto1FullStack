@@ -13,7 +13,7 @@ const formatDiameter = (min, max) => {
 
 function ResultsList() {
   const {
-    state: { results, loading, error, submitted, query },
+    state: { results, loading, error, submitted, date },
   } = useSearch()
 
   if (error) {
@@ -34,8 +34,8 @@ function ResultsList() {
     return (
       <section className="empty">
         <p className="eyebrow">Corpos próximos da Terra</p>
-        <h3>Use o formulário para procurar cometas e asteroides</h3>
-        <p>Filtramos os dados da NASA NeoWs em tempo real.</p>
+        <h3>Escolha uma data para trazer os registros</h3>
+        <p>Filtramos os dados da NASA NeoWs por aproximação diária em tempo real.</p>
       </section>
     )
   }
@@ -44,7 +44,7 @@ function ResultsList() {
     return (
       <section className="empty">
         <h3>Buscando dados…</h3>
-        <p>Conectando à API da NASA para encontrar “{query}”.</p>
+        <p>Conectando à API da NASA para encontrar objetos em {date}.</p>
       </section>
     )
   }
@@ -55,6 +55,7 @@ function ResultsList() {
         <div>
           <p className="eyebrow">Resultados</p>
           <h2>{results.length} objetos encontrados</h2>
+          <p className="muted">Data consultada: {date}</p>
         </div>
       </header>
 

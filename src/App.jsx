@@ -18,18 +18,18 @@ function App() {
         <header className="hero hero--split">
           <div className="hero__content">
             <p className="eyebrow">Monitoramento NASA</p>
-            <h1>Mapa de cometas e asteroides próximos da Terra</h1>
+            <h1>Mapa diário de cometas e asteroides próximos da Terra</h1>
             <p className="lede">
-              Visualize objetos próximos à Terra (NEOs) usando a API pública da NASA. Busque pelo
-              nome do cometa ou asteroide, veja os detalhes de aproximação e descubra se ele é
-              considerado potencialmente perigoso.
+              Visualize objetos próximos à Terra (NEOs) usando a API pública da NASA. Consulte por
+              data e veja detalhes de aproximação, incluindo velocidade, distância e se eles são
+              considerados potencialmente perigosos.
             </p>
             <div className="cta-group">
               <a className="primary" href="#cometas" onClick={scrollToSearch}>
-                Ir para a lista de cometas
+                Ver objetos por data
               </a>
               <button type="button" className="ghost" onClick={scrollToSearch}>
-                Quero pesquisar agora
+                Ir para a busca diária
               </button>
             </div>
             <ul className="hero__highlights">

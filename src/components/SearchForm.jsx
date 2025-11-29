@@ -4,23 +4,21 @@ import ErrorMessage from './messages/ErrorMessage'
 
 function SearchForm() {
   const { state, performSearch, clearResults } = useSearch()
-  const [query, setQuery] = useState('')
+  const today = useMemo(() => new Date().toISOString().split('T')[0], [])
+  const [selectedDate, setSelectedDate] = useState(today)
   const [error, setError] = useState('')
 
-  const trimmed = useMemo(() => query.trim(), [query])
+  const trimmed = useMemo(() => selectedDate.trim(), [selectedDate])
 
   useEffect(() => {
-    if (error && trimmed.length >= 3) {
+    if (error && trimmed) {
       setError('')
     }
   }, [error, trimmed])
 
   const validate = () => {
     if (!trimmed) {
-      return 'Informe um termo para buscar.'
-    }
-    if (trimmed.length < 3) {
-      return 'Digite ao menos 3 caracteres.'
+      return 'Informe uma data válida para buscar.'
     }
     return ''
   }
@@ -36,7 +34,7 @@ function SearchForm() {
   }
 
   const handleReset = () => {
-    setQuery('')
+    setSelectedDate(today)
     setError('')
     clearResults()
   }
@@ -45,8 +43,8 @@ function SearchForm() {
     <section className="panel">
       <header className="panel__header">
         <div>
-          <p className="eyebrow">Busca com API da NASA</p>
-          <h2>Procure um cometa ou asteroide pelo nome</h2>
+          <p className="eyebrow">Busca por data com API da NASA</p>
+          <h2>Veja NEOs que passam perto da Terra em um dia</h2>
         </div>
         <button type="button" className="ghost" onClick={handleReset} disabled={state.loading}>
           Limpar
@@ -55,12 +53,12 @@ function SearchForm() {
 
       <form className="search-form" onSubmit={onSubmit} noValidate>
         <label className="field">
-          <span>Nome oficial do NEO *</span>
+          <span>Data de aproximação *</span>
           <input
-            type="text"
-            placeholder="Ex.: Halley, Encke, 433 Eros"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            type="date"
+            max={today}
+            value={selectedDate}
+            onChange={(event) => setSelectedDate(event.target.value)}
             aria-invalid={Boolean(error)}
           />
           {error && <ErrorMessage message={error} />}
@@ -68,11 +66,11 @@ function SearchForm() {
 
         <div className="form-actions">
           <button className="primary" type="submit" disabled={state.loading}>
-            {state.loading ? 'Buscando…' : 'Buscar NEOs'}
+            {state.loading ? 'Buscando…' : 'Buscar por data'}
           </button>
           <p className="helper">
-            Os campos marcados com * são obrigatórios. Mensagens de validação aparecem antes e
-            depois da chamada à API.
+            Consulte os registros de objetos próximos à Terra na data informada. Usamos a mesma
+            API pública (NeoWs) utilizada em outras páginas do site.
           </p>
         </div>
       </form>
