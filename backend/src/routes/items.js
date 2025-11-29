@@ -17,6 +17,36 @@ function handleValidation(req, res) {
 }
 
 router.get(
+  '/feed',
+  requireAuth,
+  async (req, res) => {
+    const redis = await getRedisClient()
+    const cacheKey = 'items:feed'
+
+    if (redis) {
+      const cached = await redis.get(cacheKey)
+      if (cached) {
+        auditLog('items.cache.hit', { feed: true })
+        return res.json({ items: JSON.parse(cached), cached: true })
+      }
+    }
+
+    const items = await Item.find({}).sort({ createdAt: -1 }).limit(20)
+
+    if (!items.length) {
+      return res.status(404).json({ message: 'Nenhum objeto encontrado no banco.' })
+    }
+
+    if (redis) {
+      await redis.set(cacheKey, JSON.stringify(items), { EX: env.cacheTtlSeconds })
+      auditLog('items.cache.store', { feed: true })
+    }
+
+    return res.json({ items })
+  },
+)
+
+router.get(
   '/',
   requireAuth,
   [query('date').isISO8601().withMessage('Informe uma data válida (YYYY-MM-DD).')],
@@ -79,6 +109,7 @@ router.post(
     const redis = await getRedisClient()
     if (redis) {
       await redis.del(`items:${item.approachDate}`)
+      await redis.del('items:feed')
       auditLog('items.cache.invalidate', { date: item.approachDate })
     }
 
