@@ -1,34 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import SearchForm from './components/SearchForm'
+import ResultsList from './components/ResultsList'
+import { SearchProvider } from './contexts/SearchContext'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <SearchProvider>
+      <main className="page">
+        <header className="hero">
+          <p className="eyebrow">Descrição do projeto</p>
+          <h1>Catálogo de livros com React e Open Library</h1>
+          <p>
+            Aplicação SPA construída com React, Context API e useReducer, consumindo dados JSON
+            da Open Library. A página inclui validação de formulário, mensagens de erro e um fluxo
+            de busca que roda sem recarregar a interface.
+          </p>
+        </header>
+
+        <SearchForm />
+        <ResultsList />
+      </main>
+    </SearchProvider>
   )
 }
 
