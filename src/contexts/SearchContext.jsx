@@ -1,4 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useContext, useReducer } from 'react'
+import { apiFetch } from '../services/api'
 
 const SearchContext = createContext(null)
 
@@ -36,54 +38,21 @@ export function SearchProvider({ children }) {
     dispatch({ type: 'FETCH_START' })
 
     try {
-      const apiKey = import.meta.env.VITE_NASA_API_KEY || 'DEMO_KEY'
-      const endpoint = new URL('https://api.nasa.gov/neo/rest/v1/feed')
-      endpoint.searchParams.set('start_date', safeDate)
-      endpoint.searchParams.set('end_date', safeDate)
-      endpoint.searchParams.set('api_key', apiKey)
+      const data = await apiFetch(`/api/items?date=${encodeURIComponent(safeDate)}`)
 
-      const response = await fetch(endpoint)
-
-      if (!response.ok) {
-        throw new Error('Erro ao comunicar com a API pública. Tente novamente mais tarde.')
-      }
-
-      const data = await response.json()
-      const objectsForDay = data?.near_earth_objects?.[safeDate] || []
-
-      const objects = objectsForDay.map((item) => {
-        const approach = item.close_approach_data?.find(
-          (entry) => entry.close_approach_date === safeDate,
-        )
-        const diameter = item.estimated_diameter?.kilometers
-        const velocityValue = Number(approach?.relative_velocity?.kilometers_per_hour)
-        const distanceValue = Number(approach?.miss_distance?.kilometers)
-        const diameterMin = Number(diameter?.estimated_diameter_min)
-        const diameterMax = Number(diameter?.estimated_diameter_max)
-
-        return {
-          id: item.id,
-          name: item.name,
-          isHazardous: item.is_potentially_hazardous_asteroid,
-          magnitude: item.absolute_magnitude_h,
-          nasaUrl: item.nasa_jpl_url,
-          velocity: Number.isFinite(velocityValue)
-            ? velocityValue.toLocaleString('pt-BR', {
-                maximumFractionDigits: 0,
-              })
-            : null,
-          distance: Number.isFinite(distanceValue)
-            ? distanceValue.toLocaleString('pt-BR', {
-                maximumFractionDigits: 0,
-              })
-            : null,
-          approachDate:
-            approach?.close_approach_date_full || approach?.close_approach_date || safeDate,
-          orbitingBody: approach?.orbiting_body,
-          diameterMin: Number.isFinite(diameterMin) ? diameterMin : null,
-          diameterMax: Number.isFinite(diameterMax) ? diameterMax : null,
-        }
-      })
+      const objects = data.items?.map((item) => ({
+        id: item._id || item.id,
+        name: item.name,
+        isHazardous: Boolean(item.isHazardous),
+        magnitude: item.magnitude,
+        nasaUrl: item.nasaUrl,
+        velocity: item.velocity,
+        distance: item.distance,
+        approachDate: item.approachDate || safeDate,
+        orbitingBody: item.orbitingBody,
+        diameterMin: item.diameterMin,
+        diameterMax: item.diameterMax,
+      }))
 
       if (!objects.length) {
         dispatch({

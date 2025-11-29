@@ -35,7 +35,7 @@ function ResultsList() {
       <section className="empty">
         <p className="eyebrow">Corpos próximos da Terra</p>
         <h3>Escolha uma data para trazer os registros</h3>
-        <p>Filtramos os dados da NASA NeoWs por aproximação diária em tempo real.</p>
+        <p>Filtramos os dados armazenados localmente a partir do catálogo NeoWs.</p>
       </section>
     )
   }
@@ -44,7 +44,7 @@ function ResultsList() {
     return (
       <section className="empty">
         <h3>Buscando dados…</h3>
-        <p>Conectando à API da NASA para encontrar objetos em {date}.</p>
+        <p>Consultando a API interna para encontrar objetos em {date}.</p>
       </section>
     )
   }
