@@ -21,12 +21,12 @@ function App() {
         <main className="page">
           <header className="hero hero--split">
             <div className="hero__content">
-              <p className="eyebrow">Monitoramento NASA</p>
-              <h1>Mapa diário de cometas e asteroides próximos da Terra</h1>
+              <p className="eyebrow">Landing</p>
+              <h1>Banco interno de cometas e asteroides próximos da Terra</h1>
               <p className="lede">
-                Visualize objetos próximos à Terra (NEOs) usando o banco interno espelhado da NASA.
-                Consulte por data, insira novos corpos e proteja o acesso com login e cookies
-                HttpOnly.
+                Acesse a versão hospedada no GitHub Pages com uma landing page completa. Todo o
+                conteúdo da busca e do cadastro vem do banco MongoDB local do projeto, sem chamadas
+                à API externa.
               </p>
               <div className="cta-group">
                 <a className="primary" href="#cometas" onClick={scrollToSearch}>
@@ -39,7 +39,7 @@ function App() {
               <ul className="hero__highlights">
                 <li>🔒 Login obrigatório para buscar e inserir</li>
                 <li>🧠 Cache com Redis para respostas rápidas</li>
-                <li>🛰️ Dados baseados no catálogo NeoWs</li>
+                <li>🛰️ Dados armazenados no MongoDB do projeto</li>
               </ul>
             </div>
 
@@ -50,9 +50,53 @@ function App() {
               <p className="hero__value">70.000 km/h</p>
               <div className="hero__pill">Potencialmente perigosos monitorados</div>
               <p className="hero__value hero__value--small">+3.000 objetos</p>
-              <p className="muted">Role ou clique no botão para consultar um nome específico.</p>
+              <p className="muted">A base local espelha o catálogo essencial e pode receber novos itens.</p>
             </div>
           </header>
+
+          <section className="panel">
+            <header className="panel__header">
+              <div>
+                <p className="eyebrow">Visão geral</p>
+                <h2>Landing page com passos claros</h2>
+                <p className="muted">
+                  Use esta SPA para autenticar, consultar e cadastrar objetos próximos à Terra. Tudo é
+                  servido como site estático (GitHub Pages) enquanto a API retorna os dados do MongoDB.
+                </p>
+              </div>
+            </header>
+
+            <div className="grid grid--two">
+              <article className="card">
+                <h3>1) Entrar</h3>
+                <p className="muted">
+                  Faça login ou crie uma conta. O token fica salvo em cookie HttpOnly para proteger a
+                  sessão.
+                </p>
+              </article>
+              <article className="card">
+                <h3>2) Buscar</h3>
+                <p className="muted">
+                  Escolha uma data e receba os objetos daquela aproximação diretamente do MongoDB, sem
+                  depender da API externa.
+                </p>
+              </article>
+              <article className="card">
+                <h3>3) Cadastrar</h3>
+                <p className="muted">
+                  Inclua novos asteroides ou cometas. O cache de busca é invalidado automaticamente para
+                  mostrar o registro recém-criado.
+                </p>
+              </article>
+              <article className="card">
+                <h3>4) Landing no GitHub Pages</h3>
+                <p className="muted">
+                  O build gerado em <code>/docs</code> serve esta mesma landing. Basta publicar a pasta no
+                  Pages para evitar telas em branco.
+                </p>
+              </article>
+            </div>
+          </section>
 
           <section id="auth" className="stack">
             <LoginForm />

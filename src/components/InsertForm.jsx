@@ -161,7 +161,7 @@ function InsertForm() {
             <input name="orbitingBody" value={form.orbitingBody} onChange={handleChange} />
           </label>
           <label className="field">
-            <span>Link da NASA</span>
+            <span>Link de referência</span>
             <input name="nasaUrl" value={form.nasaUrl} onChange={handleChange} />
           </label>
         </div>

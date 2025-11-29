@@ -16,6 +16,6 @@ Se a página ainda aparecer vazia, abra o console do navegador (F12) para verifi
 
 ## Backend e autenticação
 
-- A pasta `backend/` traz um servidor Express com autenticação JWT via cookies HttpOnly, cache Redis para as rotas de busca e seeding inicial de objetos próximos da Terra (espelhando o catálogo NeoWs).
+- A pasta `backend/` traz um servidor Express com autenticação JWT via cookies HttpOnly, cache Redis para as rotas de busca e seeding inicial de objetos próximos da Terra armazenados no MongoDB (sem chamar a API externa).
 - Configure variáveis em `backend/.env` (exemplo em `.env.example`) com `MONGO_URI`, `JWT_SECRET`, `REDIS_URL` e `CORS_ORIGIN` apontando para o frontend.
 - Para desenvolvimento local com containers, use `docker-compose up` e acesse o frontend em `http://localhost:5173` e o backend em `http://localhost:3000`.

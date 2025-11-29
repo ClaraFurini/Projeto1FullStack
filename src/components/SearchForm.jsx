@@ -72,7 +72,7 @@ function SearchForm() {
           </button>
           <p className="helper">
             Consulte os registros de objetos próximos à Terra na data informada. Os dados vêm do
-            banco MongoDB replicando a API NeoWs para uso interno. {user ? '' : 'Faça login para liberar a busca.'}
+            banco MongoDB interno, sem depender da API externa. {user ? '' : 'Faça login para liberar a busca.'}
           </p>
         </div>
       </form>

@@ -35,7 +35,7 @@ function ResultsList() {
       <section className="empty">
         <p className="eyebrow">Corpos próximos da Terra</p>
         <h3>Escolha uma data para trazer os registros</h3>
-        <p>Filtramos os dados armazenados localmente a partir do catálogo NeoWs.</p>
+        <p>Os resultados vêm do MongoDB do projeto, já autenticado pelo backend.</p>
       </section>
     )
   }
