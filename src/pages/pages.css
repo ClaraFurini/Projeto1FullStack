@@ -1,0 +1,22 @@
+@import '../App.css';
+
+.page-grid {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.page-grid--two {
+  grid-template-columns: 1fr 1fr;
+}
+
+.section-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.section-title h1,
+.section-title h2 {
+  margin: 0;
+}
