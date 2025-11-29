@@ -1,6 +1,16 @@
 import ErrorMessage from './messages/ErrorMessage'
 import { useSearch } from '../contexts/SearchContext'
 
+const formatDiameter = (min, max) => {
+  if (!min && !max) return 'n/d'
+
+  const formatter = (value) =>
+    Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+  if (min && max) return `${formatter(min)} km a ${formatter(max)} km`
+  return `${formatter(min || max)} km`
+}
+
 function ResultsList() {
   const {
     state: { results, loading, error, submitted, query },
@@ -23,9 +33,9 @@ function ResultsList() {
   if (!submitted) {
     return (
       <section className="empty">
-        <p className="eyebrow">API em JSON</p>
-        <h3>Comece digitando um termo no formulário</h3>
-        <p>Os resultados da Open Library aparecerão aqui.</p>
+        <p className="eyebrow">Corpos próximos da Terra</p>
+        <h3>Use o formulário para procurar cometas e asteroides</h3>
+        <p>Filtramos os dados da NASA NeoWs em tempo real.</p>
       </section>
     )
   }
@@ -34,7 +44,7 @@ function ResultsList() {
     return (
       <section className="empty">
         <h3>Buscando dados…</h3>
-        <p>Conectando à API da Open Library para encontrar “{query}”.</p>
+        <p>Conectando à API da NASA para encontrar “{query}”.</p>
       </section>
     )
   }
@@ -44,24 +54,34 @@ function ResultsList() {
       <header className="panel__header">
         <div>
           <p className="eyebrow">Resultados</p>
-          <h2>{results.length} livros encontrados</h2>
+          <h2>{results.length} objetos encontrados</h2>
         </div>
       </header>
 
       <div className="grid">
-        {results.map((book) => (
-          <article key={book.key} className="card">
-            <h3>{book.title}</h3>
-            {book.author && <p className="muted">{book.author}</p>}
-            <p className="tagline">
-              {book.year ? `Publicado em ${book.year}` : 'Ano não informado'}
-            </p>
-            {book.subjects.length > 0 && (
-              <ul className="chips">
-                {book.subjects.map((subject) => (
-                  <li key={subject}>{subject}</li>
-                ))}
-              </ul>
+        {results.map((object) => (
+          <article key={object.id} className="card">
+            <div className="card__header">
+              <h3>{object.name}</h3>
+              {object.isHazardous && <span className="pill pill--danger">Perigoso</span>}
+            </div>
+
+            <p className="tagline">Magnitude absoluta: {object.magnitude ?? 'n/d'}</p>
+
+            <p className="muted">Diâmetro estimado: {formatDiameter(object.diameterMin, object.diameterMax)}</p>
+
+            <ul className="chips">
+              <li>
+                Velocidade: {object.velocity ? `${object.velocity} km/h` : 'n/d'}
+              </li>
+              <li>
+                Distância: {object.distance ? `${object.distance} km` : 'n/d'}
+              </li>
+              <li>Corpo orbital: {object.orbitingBody ?? 'n/d'}</li>
+            </ul>
+
+            {object.approachDate && (
+              <p className="muted">Próxima aproximação em {object.approachDate}</p>
             )}
           </article>
         ))}
