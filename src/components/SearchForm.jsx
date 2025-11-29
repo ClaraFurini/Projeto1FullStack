@@ -45,8 +45,8 @@ function SearchForm() {
     <section className="panel">
       <header className="panel__header">
         <div>
-          <p className="eyebrow">Busca com API JSON</p>
-          <h2>Pesquise livros usando a Open Library</h2>
+          <p className="eyebrow">Busca com API da NASA</p>
+          <h2>Procure um cometa ou asteroide pelo nome</h2>
         </div>
         <button type="button" className="ghost" onClick={handleReset} disabled={state.loading}>
           Limpar
@@ -55,10 +55,10 @@ function SearchForm() {
 
       <form className="search-form" onSubmit={onSubmit} noValidate>
         <label className="field">
-          <span>Título do livro ou autor *</span>
+          <span>Nome oficial do NEO *</span>
           <input
             type="text"
-            placeholder="Ex.: Dom Casmurro, Machado de Assis"
+            placeholder="Ex.: Halley, Encke, 433 Eros"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             aria-invalid={Boolean(error)}
@@ -68,7 +68,7 @@ function SearchForm() {
 
         <div className="form-actions">
           <button className="primary" type="submit" disabled={state.loading}>
-            {state.loading ? 'Buscando…' : 'Buscar agora'}
+            {state.loading ? 'Buscando…' : 'Buscar NEOs'}
           </button>
           <p className="helper">
             Os campos marcados com * são obrigatórios. Mensagens de validação aparecem antes e

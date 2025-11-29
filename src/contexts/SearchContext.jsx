@@ -36,7 +36,7 @@ export function SearchProvider({ children }) {
 
     try {
       const response = await fetch(
-        `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=15`,
+        'https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=DEMO_KEY&page=0&size=60',
       )
 
       if (!response.ok) {
@@ -44,20 +44,45 @@ export function SearchProvider({ children }) {
       }
 
       const data = await response.json()
-      const books = (data?.docs || []).map((item) => ({
-        key: item.key,
-        title: item.title,
-        author: item.author_name?.join(', '),
-        year: item.first_publish_year,
-        subjects: item.subject?.slice(0, 3) || [],
-      }))
+      const objects = (data?.near_earth_objects || [])
+        .filter((item) => item.name?.toLowerCase().includes(query.toLowerCase()))
+        .slice(0, 20)
+        .map((item) => {
+          const approach = item.close_approach_data?.[0]
+          const diameter = item.estimated_diameter?.kilometers
+          const velocityValue = Number(approach?.relative_velocity?.kilometers_per_hour)
+          const distanceValue = Number(approach?.miss_distance?.kilometers)
+          const diameterMin = Number(diameter?.estimated_diameter_min)
+          const diameterMax = Number(diameter?.estimated_diameter_max)
 
-      if (!books.length) {
+          return {
+            id: item.id,
+            name: item.name,
+            isHazardous: item.is_potentially_hazardous_asteroid,
+            magnitude: item.absolute_magnitude_h,
+            velocity: Number.isFinite(velocityValue)
+              ? velocityValue.toLocaleString('pt-BR', {
+                  maximumFractionDigits: 0,
+                })
+              : null,
+            distance: Number.isFinite(distanceValue)
+              ? distanceValue.toLocaleString('pt-BR', {
+                  maximumFractionDigits: 0,
+                })
+              : null,
+            approachDate: approach?.close_approach_date_full || approach?.close_approach_date,
+            orbitingBody: approach?.orbiting_body,
+            diameterMin: Number.isFinite(diameterMin) ? diameterMin : null,
+            diameterMax: Number.isFinite(diameterMax) ? diameterMax : null,
+          }
+        })
+
+      if (!objects.length) {
         dispatch({ type: 'FETCH_ERROR', payload: 'Nenhum resultado encontrado para este termo.' })
         return
       }
 
-      dispatch({ type: 'FETCH_SUCCESS', payload: books })
+      dispatch({ type: 'FETCH_SUCCESS', payload: objects })
     } catch (error) {
       dispatch({
         type: 'FETCH_ERROR',
